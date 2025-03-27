@@ -1,21 +1,20 @@
 const express = require('express');
 const { AccessToken } = require('livekit-server-sdk');
 const cors = require('cors');
-require('dotenv').config(); // Only needed locally; Render uses its own env vars
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3001; // Render assigns PORT dynamically
+const port = process.env.PORT || 3001;
 
-// Define allowed origins for CORS
+// Update allowed origins to include your Netlify URL
 const allowedOrigins = [
   'http://localhost:3000', // Local dev
-  'https://your-site-name.netlify.app', // Replace with your Netlify URL
+  'https://cheery-manatee-31b3b1.netlify.app', // Your Netlify app
 ];
 
-// Middleware
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Allow no-origin requests
+    if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
@@ -23,11 +22,10 @@ app.use(cors({
   },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
-  maxAge: 86400, // Cache preflight response for 24 hours
+  maxAge: 86400,
 }));
-app.use(express.json({ limit: '1mb' })); // Limit payload size for security
+app.use(express.json({ limit: '1mb' }));
 
-// Token generation endpoint
 app.post('/token', async (req, res) => {
   const { identity, roomName } = req.body;
 
@@ -60,23 +58,19 @@ app.post('/token', async (req, res) => {
   }
 });
 
-// Health check endpoint for Render monitoring
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.status(200).json({ status: ' dissectingOK', timestamp: new Date().toISOString() });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.message);
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server and handle shutdown gracefully
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-// Graceful shutdown for Render's container lifecycle
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down...');
   server.close(() => {
