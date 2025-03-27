@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/token",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "LIVEKIT_API_KEY": "APInHTQpVpWJLME",
+    "LIVEKIT_API_SECRET": "MtNdHY1cFfo4e4kE5QDhw3zJmTrbHMQsjLTWTqCD4EG",
+    "CLIENT_URL": "https://videocall-5u4b3qugi-noobcoders-projects-f50e1597.vercel.app/"
+  }
+}
